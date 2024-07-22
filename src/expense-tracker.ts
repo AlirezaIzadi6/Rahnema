@@ -1,3 +1,5 @@
+import { ExpenseDto } from "./dto/expenseDto";
+
 export class ExpenseTracker {
     private expenses: Expense[];
     private lastId: number;
@@ -5,7 +7,15 @@ export class ExpenseTracker {
         this.expenses = [];
         this.lastId = 0;
     }
-    add = (expense: Expense) => {
+
+    add = (newExpenseDto: ExpenseDto) => {
+        const expense: Expense = {
+            creditorId: this.lastId,
+            description: newExpenseDto.description,
+            debtors: newExpenseDto.debtors
+        };
         this.expenses.push(expense);
+        this.lastId++;
+        return expense;
     }
 }
