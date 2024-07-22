@@ -1,11 +1,11 @@
 import {string, z} from "zod";
 
-const expenseItemDto = z.object({
+export const expenseItemDto = z.object({
     debtorId: z.number(),
     amount: z.number(),
 });
 
-const expenseDto = z.object({
+export const expenseDto = z.object({
     description: z.string().nonempty(),
     debtors: z.array(expenseItemDto),
 });
