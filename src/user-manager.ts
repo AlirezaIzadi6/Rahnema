@@ -21,4 +21,8 @@ export class UserManager {
     userExists = (id: number): boolean => {
         return this.users.find(u => u.id === id) != undefined
     }
+
+    getUsers = () => {
+        return this.users;
+    }
 }
