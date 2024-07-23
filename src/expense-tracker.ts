@@ -10,7 +10,8 @@ export class ExpenseTracker {
 
     add = (newExpenseDto: ExpenseDto) => {
         const expense: Expense = {
-            creditorId: this.lastId,
+            id: this.lastId,
+            creditorId: newExpenseDto.creditorId,
             description: newExpenseDto.description,
             debtors: newExpenseDto.debtors
         };

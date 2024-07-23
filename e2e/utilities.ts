@@ -12,6 +12,7 @@ export function isUser(data: User): data is User {
 export function isExpense(data: unknown): data is Expense {
     try {
         const expenseZ = z.object({
+            id: z.number(),
             creditorId: z.number(),
             description: z.string().nonempty(),
             debtors: z.array(expenseItemDto)

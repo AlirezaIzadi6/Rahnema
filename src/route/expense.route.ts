@@ -3,12 +3,6 @@ import { ExpenseTracker } from "../expense-tracker";
 import { expenseDto, ExpenseDto } from "../dto/expenseDto";
 import { ZodError } from "zod";
 
-export const creategroupExpense = (data: unknown) => {
-    const newExpenseDto = expenseDto.parse(data);
-    const expense = {
-        
-    }
-}
 export const expenseTracker = new ExpenseTracker();
 
 export const createExpense = (body: unknown): Expense => {
