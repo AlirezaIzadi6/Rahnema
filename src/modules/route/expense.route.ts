@@ -1,8 +1,8 @@
 import {Router} from "express";
-import { ExpenseTracker } from "../expense-tracker";
-import { expenseDto, ExpenseDto } from "../dto/expenseDto";
+import { ExpenseTracker } from "../expense/expense-tracker";
+import { expenseDto, ExpenseDto } from "../expense/dto/expense-dto";
 import { ZodError } from "zod";
-import { UserManager } from "../user-manager";
+import { UserManager } from "../user/user-manager";
 import { userManager } from "./user.route";
 
 export const expenseTracker = new ExpenseTracker();

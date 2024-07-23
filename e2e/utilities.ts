@@ -1,5 +1,5 @@
 import {z} from "zod";
-import { expenseItemDto } from "../src/dto/expenseDto";
+import { expenseItemDto } from "../src/modules/expense/dto/expense-dto";
 
 export function isUserArray(data: User[]): data is User[] {
     return Array.isArray(data) && data.every(u => isUser(u));

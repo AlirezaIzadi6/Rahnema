@@ -1,6 +1,6 @@
 import express from "express";
-import {app as userRoutes} from "./route/user.route";
-import {app as expenseRoutes} from "./route/expense.route";
+import {app as userRoutes} from "./modules/route/user.route";
+import {app as expenseRoutes} from "./modules/route/expense.route";
 
 export const app = express();
 

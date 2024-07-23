@@ -1,4 +1,4 @@
-import { UserDto } from "./dto/userDto";
+import { UserDto } from "./dto/user-dto";
 
 export class UserManager {
     private users: User[];

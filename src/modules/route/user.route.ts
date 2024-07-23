@@ -1,7 +1,7 @@
 import {Router} from "express";
-import { userDto, UserDto } from "../dto/userDto";
+import { userDto, UserDto } from "../user/dto/user-dto";
 import { ZodError } from "zod";
-import { UserManager } from "../user-manager";
+import { UserManager } from "../user/user-manager";
 
 export const userManager = new UserManager();
 

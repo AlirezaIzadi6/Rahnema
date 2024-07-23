@@ -1,4 +1,4 @@
-import { ExpenseDto } from "./dto/expenseDto";
+import { ExpenseDto } from "./dto/expense-dto";
 
 export class ExpenseTracker {
     private expenses: Expense[];
