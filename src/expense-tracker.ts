@@ -19,4 +19,8 @@ export class ExpenseTracker {
         this.lastId++;
         return expense;
     }
+
+    expenseExists = (id: number): boolean => {
+        return this.expenses.find(e => e.id === id) != undefined
+    }
 }
