@@ -1,16 +1,13 @@
 import {Router} from "express";
 import { userDto, UserDto } from "../dto/userDto";
 import { ZodError } from "zod";
+import { UserManager } from "../user-manager";
 
-export const users: User[] = [];
+export const userManager = new UserManager();
 
 export const createUser = (body: unknown) => {
     const newUserDto = userDto.parse(body);
-    const newUser = {
-        id: users.length,
-        name: newUserDto.name
-    };
-    users.push(newUser);
+    const newUser = userManager.add(newUserDto);
     return newUser;
 }
 
@@ -29,6 +26,6 @@ app.post("/", (req, res) => {
 });
 
 app.get("/", (req, res) => {
-    res.send(users);
+    res.send(userManager.getUsers());
 });
 
