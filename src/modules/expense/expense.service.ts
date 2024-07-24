@@ -1,29 +1,33 @@
 import { ExpenseTracker } from "./expense-tracker";
 import { ExpenseDto, expenseDto } from "./dto/expense-dto";
-import { userManager } from "../route/user.route";
+import { UserManager } from "../user/user-manager";
+import { UserService } from "../user/user.service";
+import { NotFoundError } from "../../utilities/not-found-error";
 
 export interface IExpenseService {
-    canCreateExpense: (data: unknown) => boolean ,
-    createExpense: (data: unknown) => Expense,
+    canCreateExpense: (newExpenseDto: ExpenseDto) => boolean ,
+    createExpense: (newExpenseDto: ExpenseDto) => Promise<Expense>,
+    
 }
 
 export class ExpenseService implements IExpenseService {
-    constructor(private expenseTracker: ExpenseTracker) {}
+    constructor(private expenseTracker: ExpenseTracker, private userService: UserService) {}
 
-    canCreateExpense = (data: unknown): boolean => {
-        const newExpenseDto = expenseDto.parse(data);
-        if (!userManager.userExists(newExpenseDto.creditorId)) {
+    canCreateExpense = (newExpenseDto: ExpenseDto): boolean => {
+        if (!this.userService.userExists(newExpenseDto.creditorId)) {
             return false;
         }
-        if (!newExpenseDto.debtors.every(e => userManager.userExists(e.debtorId))) {
+        if (!newExpenseDto.debtors.every(e => this.userService.userExists(e.debtorId))) {
             return false;
         }
         return true;
     }
 
-    createExpense = (body: unknown): Expense => {
-        const newExpenseDto = expenseDto.parse(body);
-        const newExpense = this.expenseTracker.add(newExpenseDto);
+    createExpense = async(newExpenseDto: ExpenseDto) => {
+        if (!this.canCreateExpense(newExpenseDto)) {
+            throw new NotFoundError("User not found");
+        }
+        const newExpense = await this.expenseTracker.add(newExpenseDto);
         return newExpense;
     }
 }

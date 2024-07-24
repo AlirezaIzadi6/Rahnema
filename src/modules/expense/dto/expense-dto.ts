@@ -1,6 +1,7 @@
 import {string, z} from "zod";
 
 export const expenseItemDto = z.object({
+    creditorId: z.number(),
     debtorId: z.number(),
     amount: z.number(),
 });

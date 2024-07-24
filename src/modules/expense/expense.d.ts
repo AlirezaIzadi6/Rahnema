@@ -1,4 +1,5 @@
 type ExpenseItem = {
+    creditorId: number,
     debtorId: number,
     amount: number,
 };

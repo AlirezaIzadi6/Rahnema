@@ -5,6 +5,10 @@ import { isExpense } from "./utilities";
 describe("expense", () => {
     describe("create", () => {
         it("should create a new expense", async() => {
+            await request(app)
+            .post("/users")
+            .send({name: "ali"})
+            .expect(200);
             const {body: expense} = await request(app)
             .post("/expenses")
             .send({creditorId: 1, description: "testy", debtors: []})
