@@ -1,18 +1,17 @@
 import { userDto, UserDto } from "./dto/user-dto";
-import { UserManager } from "./user-manager";
+import { UserRepository } from "./user.repository";
 
 export interface IUserService {
-    createUser: (body: unknown) => User|undefined,
+    createUser: (newUserDto: UserDto) => Promise<User>,
     getUserById: (id: number) => User|undefined,
     getUsers: () => User[],
     userExists: (id: number) => boolean,
 }
 
 export class UserService implements IUserService {
-    constructor(private userManager: UserManager) {}
+    constructor(private userManager: UserRepository) {}
 
-    createUser = (body: unknown): User|undefined => {
-        const newUserDto = userDto.parse(body);
+    createUser = async (newUserDto: UserDto): Promise<User> => {
         const newUser = this.userManager.add(newUserDto);
         return newUser;
     }

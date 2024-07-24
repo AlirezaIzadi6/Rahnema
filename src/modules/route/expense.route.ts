@@ -1,10 +1,10 @@
 import {Router} from "express";
 import { ZodError } from "zod";
-import { UserManager } from "../user/user-manager";
+import { UserRepository } from "../user/user.repository";
 import { ExpenseService } from "../expense/expense.service";
-import { ExpenseTracker } from "../expense/expense-tracker";
+import { ExpenseRepository } from "../expense/expense.repository";
 import { expenseDto } from "../expense/dto/expense-dto";
-import { HttpError } from "../../utilities/not-found-error";
+import { HttpError } from "../../utilities/http-error.ts";
 import { handleExpress } from "../../utilities/handle-express";
 
 export const makeExpenseRouter = (expenseService: ExpenseService) => {

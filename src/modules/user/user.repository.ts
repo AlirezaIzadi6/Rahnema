@@ -1,6 +1,13 @@
 import { UserDto } from "./dto/user-dto";
 
-export class UserManager {
+export interface IUserRepository {
+    add: (newUserDto: UserDto) => User,
+    userExists: (id: number) => boolean,
+    getUserById: (id: number) => User|undefined,
+    getUsers: () => User[],
+}
+
+export class UserRepository {
     private users: User[];
     private lastId: number;
     constructor() {
@@ -8,7 +15,7 @@ export class UserManager {
         this.lastId = 1;
     }
 
-    add = (newUserDto: UserDto): User|undefined => {
+    add = (newUserDto: UserDto): User => {
         const newUser = {
             id: this.lastId,
             name: newUserDto.name

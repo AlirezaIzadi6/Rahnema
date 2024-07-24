@@ -1,8 +1,8 @@
-import { ExpenseTracker } from "./expense-tracker";
+import { ExpenseRepository } from "./expense.repository";
 import { ExpenseDto, expenseDto } from "./dto/expense-dto";
-import { UserManager } from "../user/user-manager";
+import { UserRepository } from "../user/user.repository";
 import { UserService } from "../user/user.service";
-import { NotFoundError } from "../../utilities/not-found-error";
+import { NotFoundError } from "../../utilities/http-error.ts";
 
 export interface IExpenseService {
     canCreateExpense: (newExpenseDto: ExpenseDto) => boolean ,
@@ -11,7 +11,7 @@ export interface IExpenseService {
 }
 
 export class ExpenseService implements IExpenseService {
-    constructor(private expenseTracker: ExpenseTracker, private userService: UserService) {}
+    constructor(private expenseTracker: ExpenseRepository, private userService: UserService) {}
 
     canCreateExpense = (newExpenseDto: ExpenseDto): boolean => {
         if (!this.userService.userExists(newExpenseDto.creditorId)) {

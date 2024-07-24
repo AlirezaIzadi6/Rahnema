@@ -1,6 +1,6 @@
 import { ExpenseDto } from "./dto/expense-dto";
 
-export interface IExpenseTracker {
+export interface IExpenseRepository {
     add: (newExpenseDto: ExpenseDto) => Expense,
     expenseExists: (id: number) => boolean,
     getCreditorExpenses: (creditorId: number) => ExpenseItem[],
@@ -8,7 +8,7 @@ export interface IExpenseTracker {
     getExpenseById: (id: number) => Expense|undefined,
 }
 
-export class ExpenseTracker implements IExpenseTracker {
+export class ExpenseRepository implements IExpenseRepository {
     private expenses: Expense[];
     private lastId: number;
     constructor() {
@@ -33,7 +33,7 @@ export class ExpenseTracker implements IExpenseTracker {
     }
 
     getCreditorExpenses = (creditorId: number): ExpenseItem[] => {
-        return this.expenses.filter(e => e.creditorId == creditorId).flatMap(e => e.debtors);
+        return this.expenses.flatMap(e => e.debtors).filter(d => d.creditorId == creditorId);
     }
 
     getDebtorExpenses = (debtorId: number): ExpenseItem[] => {

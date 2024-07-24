@@ -1,15 +1,15 @@
 import express, { ErrorRequestHandler } from "express";
 import {makeUserRouter} from "./modules/route/user.route";
 import {makeExpenseRouter} from "./modules/route/expense.route";
-import { UserManager } from "./modules/user/user-manager";
-import { ExpenseTracker } from "./modules/expense/expense-tracker";
+import { UserRepository } from "./modules/user/user.repository";
+import { ExpenseRepository } from "./modules/expense/expense.repository";
 import { ExpenseService } from "./modules/expense/expense.service";
 import { UserService } from "./modules/user/user.service";
 import { ZodError } from "zod";
 
-const userManager = new UserManager();
+const userManager = new UserRepository();
 const userService = new UserService(userManager);
-const expenseTracker = new ExpenseTracker();
+const expenseTracker = new ExpenseRepository();
 const expenseService = new ExpenseService(expenseTracker, userService);
 
 export const app = express();

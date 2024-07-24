@@ -1,6 +1,6 @@
 import { Response } from "express";
 import { ZodError } from "zod";
-import { HttpError } from "./not-found-error";
+import { HttpError } from "./http-error.ts";
 
 export const handleExpress = async <T>(res: Response, fn: () => Promise<T>) => {
     try {

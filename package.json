@@ -13,7 +13,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "set NODE_ENV=Test && jest --testMatch **/./tests/*.spec.ts",
+    "test": "set NODE_ENV=Test && jest --testMatch **/tests/*.spec.ts",
     "e2e": "set NODE_ENV=Test && jest --testMatch **/e2e/*.spec.ts",
     "start": "ts-node src/main.ts"
   },
