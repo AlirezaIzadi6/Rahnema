@@ -9,3 +9,9 @@ export class NotFoundError extends HttpError {
         super(404, message)
     }
 }
+
+export class ValidationError extends HttpError {
+    constructor(message: string) {
+        super(400, message);
+    }
+}

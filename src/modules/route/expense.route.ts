@@ -4,7 +4,7 @@ import { UserRepository } from "../user/user.repository";
 import { ExpenseService } from "../expense/expense.service";
 import { ExpenseRepository } from "../expense/expense.repository";
 import { expenseDto } from "../expense/dto/expense-dto";
-import { HttpError } from "../../utilities/http-error.ts";
+import { HttpError } from "../../utilities/http-error";
 import { handleExpress } from "../../utilities/handle-express";
 
 export const makeExpenseRouter = (expenseService: ExpenseService) => {

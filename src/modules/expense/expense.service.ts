@@ -2,7 +2,7 @@ import { ExpenseRepository } from "./expense.repository";
 import { ExpenseDto, expenseDto } from "./dto/expense-dto";
 import { UserRepository } from "../user/user.repository";
 import { UserService } from "../user/user.service";
-import { NotFoundError } from "../../utilities/http-error.ts";
+import { NotFoundError } from "../../utilities/http-error";
 
 export interface IExpenseService {
     canCreateExpense: (newExpenseDto: ExpenseDto) => boolean ,
