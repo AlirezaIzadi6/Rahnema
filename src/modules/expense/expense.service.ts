@@ -116,7 +116,7 @@ export class ExpenseService implements IExpenseService {
                     transactions.push({
                         giverId: d.memberId, 
                         takerId: c.memberId, 
-                        amount: d.account
+                        amount: Math.abs(d.account)
                     });
                     c.account -= d.account;
                     d.account = 0;
@@ -126,7 +126,7 @@ export class ExpenseService implements IExpenseService {
                         takerId: c.memberId, 
                         amount: c.account
                     });
-                    d.account -= c.account;
+                    d.account += c.account;
                     c.account = 0;
                 }
             }

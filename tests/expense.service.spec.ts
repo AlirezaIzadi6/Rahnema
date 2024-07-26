@@ -31,7 +31,7 @@ describe("expense service", () => {
         const e2 = await expenseService.createExpense(d2);
         const e3 = await expenseService.createExpense(d3);
         const e4 = await expenseService.createExpense(d4);
-        expenses = [e1, e2, e3, e4];
+        expenses = [e1, e3, e4];
     });
 
     describe("create", () => {
@@ -71,7 +71,11 @@ describe("expense service", () => {
 
     describe("calculate optimum expenses", () => {
         it("should return true transactions.", () => {
-            expect(expenseService.calculateOptimumTransactions(expenses, [1, 2, 3])).toStrictEqual([{giverId: 3, takerId: 2, amount: 26000}]);
+            const expectedTransactions: Transaction[] = [
+                {giverId: 2, takerId: 1, amount: 14000},
+                {giverId: 3, takerId: 1, amount: 26000}
+            ];
+            expect(expenseService.calculateOptimumTransactions(expenses, [1, 2, 3])).toStrictEqual(expectedTransactions);
         });
     });
 
