@@ -1,4 +1,4 @@
-import {z} from "zod";
+import {number, z} from "zod";
 import { expenseItemDto } from "../src/modules/expense/dto/expense-dto";
 import { Group } from "../src/modules/group/group";
 
@@ -42,4 +42,21 @@ const groupZ = z.object({
 
 export const makeGroup = (data: unknown): Group => {
     return groupZ.parse(data);
+}
+
+const expenseItemZ = z.object({
+    debtorId: z.number(),
+    amount: z.number(),
+});
+
+const expenseZ = z.object({
+    id: z.number(),
+    groupId: z.number(),
+    creditorId: z.number(),
+    description: z.string().nonempty(),
+    debtors: z.array(expenseItemZ),
+})
+
+export const makeExpense = (data: unknown): Expense => {
+    return expenseZ.parse(data);
 }
