@@ -41,6 +41,9 @@ export class ExpenseRepository implements IExpenseRepository {
         return this.expenses.flatMap(e => e.debtors.filter(d => d.debtorId == debtorId));
     }
 
+    getExpenseByGroup = (groupId: number): Expense[] => {
+        return this.expenses.filter(e => e.groupId == groupId);
+    }
     getExpenseById = (id: number): Expense|undefined => {
         return this.expenses.find(e => e.id == id);
     }

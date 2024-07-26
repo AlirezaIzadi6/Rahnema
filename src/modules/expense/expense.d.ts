@@ -10,3 +10,14 @@ type Expense = {
     description: string,
     debtors: ExpenseItem[],
 };
+
+type Transaction = {
+    giverId: number,
+    takerId: number,
+    amount: number,
+}
+
+type Account = {
+    memberId: number,
+    account: number,
+};
