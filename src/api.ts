@@ -6,11 +6,18 @@ import { ExpenseRepository } from "./modules/expense/expense.repository";
 import { ExpenseService } from "./modules/expense/expense.service";
 import { UserService } from "./modules/user/user.service";
 import { ZodError } from "zod";
+import { GroupRepository } from "./modules/group/group.repository";
+import { GroupService } from "./modules/group/group.service";
+import { makeGroupRouter } from "./modules/route/group.route";
 
-const userManager = new UserRepository();
-const userService = new UserService(userManager);
+const userRepository = new UserRepository();
+const userService = new UserService(userRepository);
+
+const groupRepository = new GroupRepository();
+const groupService = new GroupService(groupRepository, userService);
+
 const expenseTracker = new ExpenseRepository();
-const expenseService = new ExpenseService(expenseTracker, userService);
+const expenseService = new ExpenseService(expenseTracker, userService, groupService);
 
 export const app = express();
 
@@ -18,6 +25,7 @@ app.use(express.json());
 
 app.use("/users", makeUserRouter(userService));
 app.use("/expenses", makeExpenseRouter(expenseService));
+app.use("/groups", makeGroupRouter(groupService));
 
 const errorHandler: ErrorRequestHandler = (error, req, res, next) => {
     if (error instanceof ZodError) {

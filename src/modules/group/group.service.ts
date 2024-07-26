@@ -1,14 +1,14 @@
-import { ValidationError } from "../../utilities/http-error.js";
+import { NotFoundError, ValidationError } from "../../utilities/http-error";
 import { UserService } from "../user/user.service";
-import { GroupDto } from "./dto/group-dto";
+import { GroupDto, GroupId } from "./dto/group-dto";
 import { Group } from "./group";
 import { GroupRepository } from "./group.repository";
 
 export interface IGroupService {
     validateGroup: (newGroupDto: GroupDto) => boolean,
-    createGroup: (newGroupDto: GroupDto) => Group,
+    createGroup: (newGroupDto: GroupDto) => Promise<Group>,
     getGroupsByMemberId: (memberId: number) => Group[],
-    getGroup: (id: number) => Group|undefined,
+    getGroup: (id: number) => Group,
 }
 
 export class GroupService implements IGroupService {
@@ -23,7 +23,7 @@ export class GroupService implements IGroupService {
         return true;
     }
 
-    createGroup = (newGroupDto: GroupDto) => {
+    createGroup = async (newGroupDto: GroupDto) => {
         this.validateGroup(newGroupDto);
         const newGroup = this.groupRepository.add(newGroupDto);
         return newGroup;
@@ -34,6 +34,14 @@ export class GroupService implements IGroupService {
     }
 
     getGroup = (id: number) => {
-        return this.groupRepository.getGroup(id);
+        const group = this.groupRepository.getGroup(id);
+        if (!group) {
+            throw new NotFoundError("Group not found");
+        }
+        return group;
+    }
+
+    groupExists = (id: number): boolean => {
+        return this.groupRepository.groupExists(id);
     }
 }

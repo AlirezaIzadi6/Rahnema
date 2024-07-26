@@ -5,4 +5,7 @@ export const groupDto = z.object({
     members: z.array(z.number()),
 });
 
+export const groupId = z.coerce.number();
+
 export type GroupDto = z.infer<typeof groupDto>;
+export type GroupId = z.infer<typeof groupId>;

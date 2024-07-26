@@ -20,6 +20,7 @@ export class ExpenseRepository implements IExpenseRepository {
         const expense: Expense = {
             id: this.lastId,
             creditorId: newExpenseDto.creditorId,
+            groupId: newExpenseDto.groupId,
             description: newExpenseDto.description,
             debtors: newExpenseDto.debtors
         };
@@ -33,7 +34,7 @@ export class ExpenseRepository implements IExpenseRepository {
     }
 
     getCreditorExpenses = (creditorId: number): ExpenseItem[] => {
-        return this.expenses.flatMap(e => e.debtors).filter(d => d.creditorId == creditorId);
+        return this.expenses.filter(e => e.creditorId == creditorId).flatMap(e => e.debtors);
     }
 
     getDebtorExpenses = (debtorId: number): ExpenseItem[] => {

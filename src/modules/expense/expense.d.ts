@@ -1,5 +1,4 @@
 type ExpenseItem = {
-    creditorId: number,
     debtorId: number,
     amount: number,
 };
@@ -7,6 +6,7 @@ type ExpenseItem = {
 type Expense = {
     id: number,
     creditorId: number,
+    groupId: number,
     description: string,
     debtors: ExpenseItem[],
 };

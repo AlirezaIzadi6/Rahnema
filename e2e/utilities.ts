@@ -1,5 +1,6 @@
 import {z} from "zod";
 import { expenseItemDto } from "../src/modules/expense/dto/expense-dto";
+import { Group } from "../src/modules/group/group";
 
 export function isUserArray(data: User[]): data is User[] {
     return Array.isArray(data) && data.every(u => isUser(u));
@@ -22,4 +23,23 @@ export function isExpense(data: unknown): data is Expense {
     } catch {
         return false;
     }
+}
+
+const userZ = z.object({
+    id: z.number(),
+    name: z.string()
+});
+
+export const makeUser = (data: unknown): User => {
+    return userZ.parse(data);
+}
+
+const groupZ = z.object({
+    id: z.number(),
+    name: z.string(),
+    members: z.array(z.number())
+});
+
+export const makeGroup = (data: unknown): Group => {
+    return groupZ.parse(data);
 }
