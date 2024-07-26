@@ -18,7 +18,7 @@ export const makeExpenseRouter = (expenseService: ExpenseService) => {
 
     app.get("/get-group-even/:id", (req, res) => {
         const id = groupId.parse(req.params.id);
-        handleExpress(res, () => expenseService.getGroupEven(id));
+        handleExpress(res, () => expenseService.getGroupEvenTransactions(id));
     });
     return app;
 }

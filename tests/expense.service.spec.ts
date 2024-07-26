@@ -1,6 +1,7 @@
 import { ExpenseDto } from "../src/modules/expense/dto/expense-dto";
 import { ExpenseRepository } from "../src/modules/expense/expense.repository";
 import { ExpenseService } from "../src/modules/expense/expense.service"
+import { Group } from "../src/modules/group/group";
 import { GroupRepository } from "../src/modules/group/group.repository";
 import { GroupService } from "../src/modules/group/group.service";
 import { UserRepository } from "../src/modules/user/user.repository";
@@ -11,13 +12,26 @@ describe("expense service", () => {
     let expenseService: ExpenseService;
     let user1: User;
     let user2: User;
+    let user3: User;
+    let group: Group;
+    let expenses: Expense[];
     beforeEach(async () => {
         const userService = new UserService(new UserRepository());
         const groupService = new GroupService(new GroupRepository(), userService);
+        expenseService = new ExpenseService(new ExpenseRepository(), userService, groupService);
         user1 = await userService.createUser({name: "ali"});
         user2 = await userService.createUser({name: "reza"});
-        groupService.createGroup({name: "g1", members: [user1.id, user2.id]});
-        expenseService = new ExpenseService(new ExpenseRepository(), userService, groupService);
+        user3 = await userService.createUser({name: "mohammad"});
+        group = await groupService.createGroup({name: "g1", members: [user1.id, user2.id, user3.id]});
+        const d1 = {creditorId: 1, groupId: group.id, description: "d1", debtors: [{debtorId: 2, amount: 50000}]};
+        const d2 = {creditorId: 2, groupId: group.id, description: "d1", debtors: [{debtorId: 1, amount: 40000}]}
+        const d3 = {creditorId: 2, groupId: group.id, description: "d1", debtors: [{debtorId: 3, amount: 40000}]}
+        const d4 = {creditorId: 3, groupId: group.id, description: "d1", debtors: [{debtorId: 2, amount: 4000}, {debtorId: 1, amount: 10000}]}
+        const e1 = await expenseService.createExpense(d1);
+        const e2 = await expenseService.createExpense(d2);
+        const e3 = await expenseService.createExpense(d3);
+        const e4 = await expenseService.createExpense(d4);
+        expenses = [e1, e2, e3, e4];
     });
 
     describe("create", () => {
@@ -55,13 +69,15 @@ describe("expense service", () => {
         });
     });
 
+    describe("calculate optimum expenses", () => {
+        it("should return true transactions.", () => {
+            expect(expenseService.calculateOptimumTransactions(expenses, [1, 2, 3])).toStrictEqual([{giverId: 3, takerId: 2, amount: 26000}]);
+        });
+    });
+
     describe("get group even", () => {
-        it("should show me bla bla bla", () => {
-            const e1 = {id: 1, creditorId: 1, groupId: 1, description: "d1", debtors: [{debtorId: 2, amount: 50000}]};
-            const e2 = {id: 2, creditorId: 2, groupId: 1, description: "d1", debtors: [{debtorId: 1, amount: 40000}]}
-            const e3 = {id: 2, creditorId: 2, groupId: 1, description: "d1", debtors: [{debtorId: 3, amount: 40000}]}
-            const e4 = {id: 2, creditorId: 3, groupId: 1, description: "d1", debtors: [{debtorId: 2, amount: 4000}, {debtorId: 1, amount: 10000}]}
-            expect(expenseService.calculateOptimumTransactions([e1, e2, e3, e4], [1, 2, 3])).toStrictEqual([{giverId: 3, takerId: 2, amount: 26000}]);
+        it("should return true transactions", () => {
+            expect(expenseService.getGroupEvenTransactions(group.id)).toStrictEqual([{giverId: 3, takerId: 2, amount: 26000}]);
         })
     })
 });

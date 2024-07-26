@@ -10,7 +10,7 @@ export interface IExpenseService {
     validateExpense: (newExpenseDto: ExpenseDto) => boolean ,
     createExpense: (newExpenseDto: ExpenseDto) => Promise<Expense>,
     getExpenseByGroupId: (groupId: number) => Expense[];
-    getGroupEven: (groupId: number) => Transaction[];
+    getGroupEvenTransactions: (groupId: number) => Transaction[];
     calculateOptimumTransactions: (expenses: Expense[], memberIds: number[]) => Transaction[];
     getTransactions: (debtors: Account[], creditors: Account[]) => Transaction[];
 }
@@ -50,7 +50,7 @@ export class ExpenseService implements IExpenseService {
         return this.expenseRepository.getExpenseByGroup(groupId);
     }
 
-    getGroupEven = (groupId: number) => {
+    getGroupEvenTransactions = (groupId: number) => {
         const expenses = this.getExpenseByGroupId(groupId);
         const memberIds = this.groupService.getGroup(groupId).members;
         return this.calculateOptimumTransactions(expenses, memberIds);
