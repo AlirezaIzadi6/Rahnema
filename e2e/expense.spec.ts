@@ -74,5 +74,12 @@ describe("expense", () => {
             .send()
             .expect(200);
         });
+
+        it("should return 404 if group id is not valid", async() => {
+            await request(app)
+            .get("/expenses/get-group-even/4")
+            .send()
+            .expect(404);
+        })
     });
 });

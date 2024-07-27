@@ -1,5 +1,7 @@
+import { AddId } from "./in-memory-database";
+
 export interface IMyDatabase {
-    save: <T, K>(data: T) => Promise<K>;
+    save: <T, K extends AddId<T>>(data: T) => Promise<K>;
     find: <T>(id: number) => Promise<T>;
     findAll: <T>(fn: () => boolean) => Promise<T[]>;
     update: <T>(data: T) => Promise<T>;
