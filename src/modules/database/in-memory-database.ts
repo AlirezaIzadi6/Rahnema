@@ -2,9 +2,9 @@ import { arrayOutputType } from "zod";
 import { IMyDatabase } from "./my-database";
 import { expenseDto } from "../expense/dto/expense-dto";
 
-export type AddId<T> = T&{id: number};
+export type RemoveId<T> = Omit<T, "id">;
 
-export class InMemoryDatabase<T> implements IMyDatabase {
+export class InMemoryDatabase<T extends {id: number}> implements IMyDatabase<T> {
     private table: Array<T>;
     private lastId: number;
     constructor() {
@@ -12,25 +12,31 @@ export class InMemoryDatabase<T> implements IMyDatabase {
         this.lastId = 1;
     }
 
-    save = async <T>(data: T): Promise<AddId<T>> => {
-        const toSave: AddId<T> = {id: this.lastId, ...data};
+    save = async(data: RemoveId<T>): Promise<T> => {
+        const toSave = {id: this.lastId, ...data} as T;
         this.table.push(toSave);
+        return toSave;
     }
 
-    
-    find = async <T>(id: number): Promise<T> => {
-        throw new Error("Method not implemented yet.");
+    find = async (id: number): Promise<T|undefined> => {
+        return await this.table.find(e => e.id == id);
     }
 
-    findAll = async <T>(fn: () => boolean): Promise<T[]> => {
-        throw new Error("Method not implemented yet.");
+    findAll = async (fn: (e: T) => boolean): Promise<T[]> => {
+        return this.table.filter(e => fn(e));
     }
 
-    update = async <T>(data: T): Promise<T> => {
-        throw new Error("Method not implemented yet.");
+    update = async (data: T): Promise<T> => {
+        const index = this.table.findIndex(e => e.id == data.id);
+        this.table[index] = data;
+        return this.table[index];
     }
 
-    delete = async (id: number): Promise<boolean> => {
-        throw new Error("Method not implemented yet.")
+    delete = async (id: number): Promise<void> => {
+        const index = this.table.findIndex(e => e.id == id);
+        if (index == -1) {
+            throw new Error("Invalid id");
+        }
+        this.table.splice(index, 1);
     }
 }

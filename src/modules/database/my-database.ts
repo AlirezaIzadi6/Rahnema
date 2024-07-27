@@ -1,22 +1,22 @@
-import { AddId } from "./in-memory-database";
+import { RemoveId } from "./in-memory-database";
 
-export interface IMyDatabase {
-    save: <T, K extends AddId<T>>(data: T) => Promise<K>;
-    find: <T>(id: number) => Promise<T>;
-    findAll: <T>(fn: () => boolean) => Promise<T[]>;
-    update: <T>(data: T) => Promise<T>;
-    delete: (id: number) => Promise<boolean>;
+export interface IMyDatabase <T>{
+    save: (data: RemoveId<T>) => Promise<T>;
+    find: (id: number) => Promise<T|undefined>;
+    findAll: (fn: () => boolean) => Promise<T[]>;
+    update: (data: T) => Promise<T>;
+    delete: (id: number) => Promise<void>;
 }
 
-export class MyDatabase implements IMyDatabase {
+export class MyDatabase<T> implements IMyDatabase<T> {
     constructor() {}
 
-    save = async <T, K>(data: T): Promise<K> => {
+    save = async (data: RemoveId<T>): Promise<T> => {
         const jsonText = JSON.stringify(data);
         throw new Error("Method not implemented yet.");
     }
 
-    find = async <T>(id: number): Promise<T> => {
+    find = async (id: number): Promise<T> => {
         throw new Error("Method not implemented yet.");
     }
 
@@ -28,7 +28,7 @@ export class MyDatabase implements IMyDatabase {
         throw new Error("Method not implemented yet.");
     }
 
-    delete = async (id: number): Promise<boolean> => {
+    delete = async (id: number): Promise<void> => {
         throw new Error("Method not implemented yet.")
     }
 }
