@@ -15,6 +15,7 @@ export class InMemoryDatabase<T extends {id: number}> implements IMyDatabase<T> 
     save = async(data: RemoveId<T>): Promise<T> => {
         const toSave = {id: this.lastId, ...data} as T;
         this.table.push(toSave);
+        this.lastId++;
         return toSave;
     }
 

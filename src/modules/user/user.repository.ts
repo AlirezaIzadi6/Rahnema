@@ -1,39 +1,34 @@
+import { InMemoryDatabase } from "../database/in-memory-database";
+import { IMyDatabase } from "../database/my-database";
 import { UserDto } from "./dto/user-dto";
 
 export interface IUserRepository {
-    add: (newUserDto: UserDto) => User,
-    userExists: (id: number) => boolean,
-    getUserById: (id: number) => User|undefined,
-    getUsers: () => User[],
+    add: (newUserDto: UserDto) => Promise<User>,
+    userExists: (id: number) => Promise<boolean>,
+    getUserById: (id: number) => Promise<User|undefined>,
+    getUsers: () => Promise<User[]>,
 }
 
 export class UserRepository {
-    private users: User[];
-    private lastId: number;
+    private inMemoryDatabase: IMyDatabase<User>;
     constructor() {
-        this.users = [];
-        this.lastId = 1;
+        this.inMemoryDatabase = new InMemoryDatabase<User>();
     }
 
-    add = (newUserDto: UserDto): User => {
-        const newUser = {
-            id: this.lastId,
-            name: newUserDto.name
-        };
-        this.users.push(newUser);
-        this.lastId++;
+    add = async (newUserDto: UserDto): Promise<User> => {
+        const newUser = await this.inMemoryDatabase.save(newUserDto);
         return newUser;
     }
 
-    userExists = (id: number): boolean => {
-        return this.users.find(u => u.id === id) != undefined
+    userExists = async (id: number): Promise<boolean> => {
+        return await this.inMemoryDatabase.find(id) != undefined;
     }
 
-    getUserById = (id: number): User|undefined => {
-        return this.users.find(u => u.id == id);
+    getUserById = async (id: number): Promise<User|undefined> => {
+        return await this.inMemoryDatabase.find(id);
     }
-    
-    getUsers = () => {
-        return this.users;
+
+    getUsers = async () => {
+        return await this.inMemoryDatabase.findAll(e => typeof(e.id) == "number");
     }
 }

@@ -26,8 +26,8 @@ export const makeUserRouter = (userService: UserService) => {
         handleExpress(res, () => userService.createUser(newUserDto));
     });
 
-    app.get("/", (req, res) => {
-        res.send(userService.getUsers());
+    app.get("/", async (req, res) => {
+        res.send(await userService.getUsers());
     });
     return app;
 }

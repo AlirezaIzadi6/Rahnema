@@ -3,7 +3,7 @@ import { RemoveId } from "./in-memory-database";
 export interface IMyDatabase <T>{
     save: (data: RemoveId<T>) => Promise<T>;
     find: (id: number) => Promise<T|undefined>;
-    findAll: (fn: () => boolean) => Promise<T[]>;
+    findAll: (fn: (e: T) => boolean) => Promise<T[]>;
     update: (data: T) => Promise<T>;
     delete: (id: number) => Promise<void>;
 }

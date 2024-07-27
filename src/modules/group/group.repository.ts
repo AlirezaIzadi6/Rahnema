@@ -1,41 +1,35 @@
+import { InMemoryDatabase } from "../database/in-memory-database";
+import { IMyDatabase } from "../database/my-database";
 import { GroupDto } from "./dto/group-dto";
 import { Group } from "./group";
 
 export interface IGroupRepository {
-    add: (newGroupDto: GroupDto) => Group,
-    groupExists: (id: number) => boolean,
-    getGroup: (id: number) => Group|undefined,
-    getGroupsByMemberId: (memberId: number) => Group[],
+    add: (newGroupDto: GroupDto) => Promise<Group>,
+    groupExists: (id: number) => Promise<boolean>,
+    getGroup: (id: number) => Promise<Group|undefined>,
+    getGroupsByMemberId: (memberId: number) => Promise<Group[]>,
 }
 
 export class GroupRepository implements IGroupRepository {
-    private groups: Group[];
-    private lastId: number;
+    private inMemoryDatabase: IMyDatabase<Group>;
     constructor() {
-        this.groups = [];
-        this.lastId = 1;
+        this.inMemoryDatabase = new InMemoryDatabase();
     }
 
-    add = (newGroupDto: GroupDto) => {
-        const newGroup: Group = {
-            id: this.lastId,
-            name: newGroupDto.name,
-            members: newGroupDto.members,
-        };
-        this.groups.push(newGroup);
-        this.lastId++;
+    add = async (newGroupDto: GroupDto) => {
+        const newGroup = await this.inMemoryDatabase.save(newGroupDto);
         return newGroup;
     }
 
-    groupExists = (id: number) => {
-        return this.groups.find(g => g.id === id) != undefined;
+    groupExists = async (id: number) => {
+        return await this.inMemoryDatabase.find(id) != undefined;
     }
 
-    getGroup = (id: number) => {
-        return this.groups.find(g => g.id === id);
+    getGroup = async (id: number) => {
+        return await this.inMemoryDatabase.find(id);
     }
 
-    getGroupsByMemberId = (memberId: number) => {
-        return this.groups.filter(g => g.members.includes(memberId));
+    getGroupsByMemberId = async (memberId: number) => {
+        return await this.inMemoryDatabase.findAll(g => g.members.includes(memberId));
     }
 }

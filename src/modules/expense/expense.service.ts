@@ -7,10 +7,10 @@ import { GroupService } from "../group/group.service";
 import { getNextPermutation } from "../../utilities/get-next-permutation";
 
 export interface IExpenseService {
-    validateExpense: (newExpenseDto: ExpenseDto) => boolean ,
+    validateExpense: (newExpenseDto: ExpenseDto) => Promise<boolean>,
     createExpense: (newExpenseDto: ExpenseDto) => Promise<Expense>,
-    getExpenseByGroupId: (groupId: number) => Expense[];
-    getGroupEvenTransactions: (groupId: number) => Transaction[];
+    getExpenseByGroupId: (groupId: number) => Promise<Expense[]>;
+    getGroupEvenTransactions: (groupId: number) => Promise<Transaction[]>;
     calculateOptimumTransactions: (expenses: Expense[], memberIds: number[]) => Transaction[];
     getTransactions: (debtors: Account[], creditors: Account[]) => Transaction[];
 }
@@ -18,7 +18,7 @@ export interface IExpenseService {
 export class ExpenseService implements IExpenseService {
     constructor(private expenseRepository: ExpenseRepository, private userService: UserService, private groupService: GroupService) {}
 
-    validateExpense = (newExpenseDto: ExpenseDto): boolean => {
+    validateExpense = async (newExpenseDto: ExpenseDto): Promise<boolean> => {
         if (newExpenseDto.debtors.length == 0) {
             throw new ValidationError("debtors field is empty.");
         }
@@ -28,31 +28,31 @@ export class ExpenseService implements IExpenseService {
         if (newExpenseDto.debtors.some(d => d.amount <= 0)) {
             throw new ValidationError("amount must be positive number.")
         }
-        if (!this.userService.userExists(newExpenseDto.creditorId)) {
+        if (!(await this.userService.userExists(newExpenseDto.creditorId))) {
             throw new NotFoundError("creditorId does not exist");
         }
-        if (!newExpenseDto.debtors.every(e => this.userService.userExists(e.debtorId))) {
+        if (!newExpenseDto.debtors.every(async(e) => (await this.userService.userExists(e.debtorId)))) {
             throw new NotFoundError("debtor id does not exist")
         }
-        if (!this.groupService.groupExists(newExpenseDto.groupId)) {
+        if (!(await this.groupService.groupExists(newExpenseDto.groupId))) {
             throw new NotFoundError("Group does not exist");
         }
         return true;
     }
 
     createExpense = async(newExpenseDto: ExpenseDto) => {
-        this.validateExpense(newExpenseDto);
+        await this.validateExpense(newExpenseDto);
         const newExpense = await this.expenseRepository.add(newExpenseDto);
         return newExpense;
     }
 
-    getExpenseByGroupId = (groupId: number): Expense[] => {
-        return this.expenseRepository.getExpenseByGroup(groupId);
+    getExpenseByGroupId = async (groupId: number): Promise<Expense[]> => {
+        return await this.expenseRepository.getExpenseByGroup(groupId);
     }
 
-    getGroupEvenTransactions = (groupId: number) => {
-        const expenses = this.getExpenseByGroupId(groupId);
-        const memberIds = this.groupService.getGroup(groupId).members;
+    getGroupEvenTransactions = async (groupId: number) => {
+        const expenses = await this.getExpenseByGroupId(groupId);
+        const memberIds = (await this.groupService.getGroup(groupId)).members;
         return this.calculateOptimumTransactions(expenses, memberIds);
     }
 

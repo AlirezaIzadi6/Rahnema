@@ -3,28 +3,28 @@ import { UserRepository } from "./user.repository";
 
 export interface IUserService {
     createUser: (newUserDto: UserDto) => Promise<User>,
-    getUserById: (id: number) => User|undefined,
-    getUsers: () => User[],
-    userExists: (id: number) => boolean,
+    getUserById: (id: number) => Promise<User|undefined>,
+    getUsers: () => Promise<User[]>,
+    userExists: (id: number) => Promise<boolean>,
 }
 
 export class UserService implements IUserService {
     constructor(private userManager: UserRepository) {}
 
     createUser = async (newUserDto: UserDto): Promise<User> => {
-        const newUser = this.userManager.add(newUserDto);
+        const newUser = await this.userManager.add(newUserDto);
         return newUser;
     }
 
-    getUserById = (id: number): User|undefined => {
-        return this.userManager.getUserById(id);
+    getUserById = async (id: number): Promise<User|undefined> => {
+        return await this.userManager.getUserById(id);
     }
 
-    getUsers = (): User[] => {
-        return this.userManager.getUsers();
+    getUsers = async (): Promise<User[]> => {
+        return await this.userManager.getUsers();
     }
 
-    userExists = (id: number): boolean => {
-        return this.userManager.userExists(id);
+    userExists = async (id: number): Promise<boolean> => {
+        return await this.userManager.userExists(id);
     }
 }

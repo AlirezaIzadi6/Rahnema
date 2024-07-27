@@ -1,50 +1,33 @@
+import { InMemoryDatabase } from "../database/in-memory-database";
+import { IMyDatabase } from "../database/my-database";
 import { ExpenseDto } from "./dto/expense-dto";
 
 export interface IExpenseRepository {
-    add: (newExpenseDto: ExpenseDto) => Expense,
-    expenseExists: (id: number) => boolean,
-    getCreditorExpenses: (creditorId: number) => ExpenseItem[],
-    getDebtorExpenses: (debtorId: number) => ExpenseItem[],
-    getExpenseById: (id: number) => Expense|undefined,
+    add: (newExpenseDto: ExpenseDto) => Promise<Expense>,
+    expenseExists: (id: number) => Promise<boolean>,
+    getExpenseById: (id: number) => Promise<Expense|undefined>,
 }
 
 export class ExpenseRepository implements IExpenseRepository {
-    private expenses: Expense[];
-    private lastId: number;
+    private inMemoryDatabase: IMyDatabase<Expense>;
     constructor() {
-        this.expenses = [];
-        this.lastId = 0;
+        this.inMemoryDatabase = new InMemoryDatabase();
     }
 
-    add = (newExpenseDto: ExpenseDto) => {
-        const expense: Expense = {
-            id: this.lastId,
-            creditorId: newExpenseDto.creditorId,
-            groupId: newExpenseDto.groupId,
-            description: newExpenseDto.description,
-            debtors: newExpenseDto.debtors
-        };
-        this.expenses.push(expense);
-        this.lastId++;
+    add = async (newExpenseDto: ExpenseDto) => {
+        const expense = await this.inMemoryDatabase.save(newExpenseDto);
         return expense;
     }
 
-    expenseExists = (id: number): boolean => {
-        return this.expenses.find(e => e.id === id) != undefined
+    expenseExists = async (id: number): Promise<boolean> => {
+        return await this.inMemoryDatabase.find(id) != undefined
     }
 
-    getCreditorExpenses = (creditorId: number): ExpenseItem[] => {
-        return this.expenses.filter(e => e.creditorId == creditorId).flatMap(e => e.debtors);
+    getExpenseByGroup = async (groupId: number): Promise<Expense[]> => {
+        return this.inMemoryDatabase.findAll(e => e.groupId == groupId);
     }
 
-    getDebtorExpenses = (debtorId: number): ExpenseItem[] => {
-        return this.expenses.flatMap(e => e.debtors.filter(d => d.debtorId == debtorId));
-    }
-
-    getExpenseByGroup = (groupId: number): Expense[] => {
-        return this.expenses.filter(e => e.groupId == groupId);
-    }
-    getExpenseById = (id: number): Expense|undefined => {
-        return this.expenses.find(e => e.id == id);
+    getExpenseById = async (id: number): Promise<Expense|undefined> => {
+        return await this.inMemoryDatabase.find(id);
     }
 }
